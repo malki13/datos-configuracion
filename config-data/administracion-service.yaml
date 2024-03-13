@@ -1,0 +1,24 @@
+server:
+  port: ${PORT:${SERVER_PORT:0}}
+  servlet:
+    contextPath: /telecom-cedia/api/administracion
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      # default-zone: http://localhost:8761/eureka
+      default-zone: http://backendeureka:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+openapi:
+  service:
+    title: administracion-service doc
+    version: 1.0.0
+    # url: http://localhost:8080 #api gateway url
+    url: http://backendgateway:8080
+springdoc:
+  api-docs:
+    path: /test-service/v3/api-docs
+  swagger-ui:
+    path: /test-service/swagger-ui.html
