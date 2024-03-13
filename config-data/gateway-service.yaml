@@ -1,0 +1,95 @@
+server:
+  port: 8080
+  
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      # default-zone: http://localhost:8761/eureka
+      default-zone: http://backendeureka:8761/eureka
+  instance:
+    hostname: backendeureka
+
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+        - AddResponseHeader=Access-Control-Allow-Origin, *
+      globalcors:
+          add-to-simple-url-handler-mapping: true
+          corsConfigurations:
+            '[/**]':
+              allowedOriginPatterns: "*"
+              allowedHeaders: "*"
+              allowCredentials: true
+              allowedMethods: "*"
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        # - id: user-service
+        #   uri: lb://user-service
+        #   predicates:
+        #     - Path=/user/**
+        # - id: car-service
+        #   uri: lb://car-service
+        #   predicates:
+        #     - Path=/car/**
+        # - id: bike-service
+        #   uri: lb://bike-service
+        #   predicates:
+        #     - Path=/bike/**
+        - id: gestion-service
+          uri: lb://gestion-service
+          predicates:
+            - Path=/telecom-cedia/api/gestion/**
+          filters:
+            - AuthenticationFilter
+        - id: administracion-service
+          uri: lb://administracion-service
+          predicates:
+            - Path=/telecom-cedia/api/administracion/**
+          filters:
+            - AuthenticationFilter
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: test-service-route
+          uri: lb://gestion-service
+          predicates:
+            - Path=/test-service/v3/api-docs
+            - Method=GET
+        - id: administracion-service-route
+          uri: lb://administracion-service
+          predicates:
+            - Path=/telecom-cedia/api/administracion/test-service/v3/api-docs
+            - Method=GET
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /test-service/v3/api-docs
+        name: Test Service
+      - url: /telecom-cedia/api/administracion/test-service/v3/api-docs
+        name: Administracion Service
+# springdoc:
+#   api-docs:
+#     enabled: true
+#   swagger-ui:
+#     enabled: true
+#     path: /swagger-ui.html
+#     config-url: /v3/api-docs/swagger-config
+#     urls:
+#       - url: /telecom-cedia/api/administracion/v3/api-docs
+#         name: Logic service
