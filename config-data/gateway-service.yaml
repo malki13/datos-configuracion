@@ -8,3 +8,27 @@ eureka:
       default-zone: http://backendeureka:8761/eureka
   instance:
     hostname: backendeureka
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+        - AddResponseHeader=Access-Control-Allow-Origin, *
+      globalcors:
+          add-to-simple-url-handler-mapping: true
+          corsConfigurations:
+            '[/**]':
+              allowedOriginPatterns: "*"
+              allowedHeaders: "*"
+              allowCredentials: true
+              allowedMethods: "*"
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
