@@ -36,7 +36,7 @@ spring:
           filters:
             - AuthenticationFilter
         - id: administracion-service
-          uri: lb://administracion-service
+          uri: http://backenadministracion:8091
           predicates:
             - Path=/telecom-cedia/api/administracion/**
           filters:
@@ -51,7 +51,7 @@ spring:
             - Path=/test-service/v3/api-docs
             - Method=GET
         - id: administracion-service-route
-          uri: lb://administracion-service
+          uri: http://backenadministracion:8091
           predicates:
             - Path=/telecom-cedia/api/administracion/test-service/v3/api-docs
             - Method=GET
