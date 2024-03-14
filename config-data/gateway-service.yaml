@@ -7,7 +7,8 @@ eureka:
     service-url:
       default-zone: http://backendeureka:8761/eureka
   instance:
-    hostname: backendeureka
+    # hostname: backendeureka
+    prefer-ip-address: true
 spring:
   main:
     web-application-type: reactive
@@ -17,7 +18,7 @@ spring:
       #   - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
       #   - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
-          # add-to-simple-url-handler-mapping: true
+      #     add-to-simple-url-handler-mapping: true
           corsConfigurations:
             '[/**]':
               allowedOriginPatterns: "*"
@@ -28,16 +29,27 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: auth-service
-          uri: lb://auth-service
+        - id: gestion-service
+          uri: lb://gestion-service
           predicates:
-            - Path=/auth/**
+            - Path=/telecom-cedia/api/gestion/**
+          filters:
+            - AuthenticationFilter
         - id: administracion-service
           uri: lb://administracion-service
           predicates:
             - Path=/telecom-cedia/api/administracion/**
           filters:
             - AuthenticationFilter
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+        - id: test-service-route
+          uri: lb://gestion-service
+          predicates:
+            - Path=/test-service/v3/api-docs
+            - Method=GET
         - id: administracion-service-route
           uri: lb://administracion-service
           predicates:
@@ -51,5 +63,9 @@ springdoc:
     path: /swagger-ui.html
     config-url: /v3/api-docs/swagger-config
     urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /test-service/v3/api-docs
+        name: Test Service
       - url: /telecom-cedia/api/administracion/test-service/v3/api-docs
         name: Administracion Service
