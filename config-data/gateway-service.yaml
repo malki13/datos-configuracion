@@ -71,3 +71,6 @@ springdoc:
         name: Test Service
       - url: /telecom-cedia/api/administracion/test-service/v3/api-docs
         name: Administracion Service
+cors: 
+  origins:
+    swaggerUI: "http://localhost:8080"
