@@ -7,7 +7,7 @@ eureka:
     service-url:
       default-zone: http://backendeureka:8761/eureka
   instance:
-    hostname: backendeureka
+    hostname: backendgateway
 spring:
   main:
     web-application-type: reactive
