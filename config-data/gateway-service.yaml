@@ -1,24 +1,24 @@
 server:
   port: 8080
+  
 eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
+      # default-zone: http://localhost:8761/eureka
       default-zone: http://backendeureka:8761/eureka
   instance:
-    hostname: backendgateway
-    # prefer-ip-address: true
+    hostname: localhost
+
 spring:
   main:
     web-application-type: reactive
   cloud:
     gateway:
-      # default-filters:
-      #   - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
-      #   - AddResponseHeader=Access-Control-Allow-Origin, *
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_FIRST
+        - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
           add-to-simple-url-handler-mapping: true
           corsConfigurations:
@@ -38,7 +38,7 @@ spring:
           filters:
             - AuthenticationFilter
         - id: administracion-service
-          uri: http://backenadministracion:8091
+          uri: lb://administracion-service
           predicates:
             - Path=/telecom-cedia/api/administracion/**
           filters:
@@ -53,7 +53,7 @@ spring:
             - Path=/test-service/v3/api-docs
             - Method=GET
         - id: administracion-service-route
-          uri: http://backenadministracion:8091
+          uri: lb://administracion-service
           predicates:
             - Path=/telecom-cedia/api/administracion/test-service/v3/api-docs
             - Method=GET
@@ -71,6 +71,3 @@ springdoc:
         name: Test Service
       - url: /telecom-cedia/api/administracion/test-service/v3/api-docs
         name: Administracion Service
-cors: 
-  origins:
-    swaggerUI: "http://localhost:8080"
